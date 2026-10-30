@@ -3,6 +3,22 @@
 
 # Agent Skills
 
+## Install this curated set (any AI agent)
+
+One command, all 18 curated skills (marketing/content/research/creative + the 11 yt-* YouTube pipeline skills):
+
+```bash
+npx skills add marcsultan/skills -g -y
+```
+
+Update everything later:
+
+```bash
+npx skills update
+```
+
+Scope note: `-g` = user-wide (`~/.agents/skills`, read by OpenCode, Claude, Cursor, Cline, Amp, +20 agents). Run without `-g` inside a project to install there instead. The legacy `skills/` catalog below is the deprecated Codex examples collection.
+
 Agent Skills are folders of instructions, scripts, and resources that AI agents can discover and use to perform at specific tasks. Write once, use everywhere.
 
 Codex uses skills to help package capabilities that teams and individuals can use to complete specific tasks in a repeatable way. This repository catalogs skills for use and distribution with Codex.
