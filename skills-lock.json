@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "skills": {
+    "ai-image-generation": {
+      "source": "inference-sh/skills",
+      "sourceType": "github",
+      "skillPath": "tools/image/ai-image-generation/SKILL.md",
+      "computedHash": "f34fd2ee8788b5763b237ddb17614708b85d0e0c03e8f27f024158f4d81183d1"
+    },
+    "content-strategy": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "skillPath": "skills/content-strategy/SKILL.md",
+      "computedHash": "2acc71a7c9828d21ce8e91d493ff27fa45e2a3736d0f07eac58459993dee5c90"
+    },
+    "content-writer": {
+      "source": "aaron-he-zhu/aaron-marketing-skills",
+      "sourceType": "github",
+      "skillPath": "seo-geo/implement/content-writer/SKILL.md",
+      "computedHash": "97aa6354d82e79dc6796f82bc347023df0f5f893d955b98762bbf0e8cb83468b"
+    },
+    "deep-research": {
+      "source": "affaan-m/ecc",
+      "sourceType": "github",
+      "skillPath": "skills/deep-research/SKILL.md",
+      "computedHash": "fcdb9ab4aaa1633a5d29672e194ec61e0e169ff0fc815e376fcba98753e070e8"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "computedHash": "b146008599c31057cef1c145774cea5d5afb30e8f43fa802e47a4b461419aaaf"
+    },
+    "prompt-engineering": {
+      "source": "inference-sh/skills",
+      "sourceType": "github",
+      "skillPath": "guides/prompting/prompt-engineering/SKILL.md",
+      "computedHash": "ba3c5b496cdbce9e3737dd1355fa0c47addf9c4464e553c3a76cbe6baa633cea"
+    },
+    "web-search": {
+      "source": "inference-sh/skills",
+      "sourceType": "github",
+      "skillPath": "tools/llm/web-search/SKILL.md",
+      "computedHash": "acb021df44d30dbcbd8b517dc2edffcc121c53ae485a136f59b1dbc71306f674"
+    },
+    "yt-audit": {
+      "source": "marcsultan/youtube-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/yt-audit/SKILL.md",
+      "computedHash": "cbc80154962613255bc82a6d89f521275204d2455a2c9a595e164c5f6051e36b"
+    },
+    "yt-chapters": {
+      "source": "marcsultan/youtube-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/yt-chapters/SKILL.md",
+      "computedHash": "8c491f9e8612793e8bcf7a4870579ffac7de1b8393bf439dd3bc16bb52fbfd12"
+    },
+    "yt-comment": {
+      "source": "marcsultan/youtube-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/yt-comment/SKILL.md",
+      "computedHash": "bc56ecd0a76c6a31e169ec3265597d206019f4110b681f963e78fba19a5d0ae1"
+    },
+    "yt-edit": {
+      "source": "marcsultan/youtube-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/yt-edit/SKILL.md",
+      "computedHash": "391dd911a6cd10bc90ca3bbe1a4cf9b7534e6e4dca8ae35eb4f28688a001618a"
+    },
+    "yt-package": {
+      "source": "marcsultan/youtube-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/yt-package/SKILL.md",
+      "computedHash": "01e78cc706f634a5c3fc29977052dedc4b2faaa1c4def215880c2cbc3e425a56"
+    },
+    "yt-plan": {
+      "source": "marcsultan/youtube-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/yt-plan/SKILL.md",
+      "computedHash": "ddc3d66b7f163a90712ebd3be0ef9f5975426c5424d94cd79913823e76aeba51"
+    },
+    "yt-retention": {
+      "source": "marcsultan/youtube-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/yt-retention/SKILL.md",
+      "computedHash": "a837b77a96f4a2ad509f3536d57f728b59f6cf249670b1441de81dcc9b1ddb02"
+    },
+    "yt-script": {
+      "source": "marcsultan/youtube-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/yt-script/SKILL.md",
+      "computedHash": "df7667fe06ccef0ff270a8414e06e8e248b7036d5088abb84ed2d8d101c0cb59"
+    },
+    "yt-seo": {
+      "source": "marcsultan/youtube-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/yt-seo/SKILL.md",
+      "computedHash": "1f72b2c68dd654b592b49d2c3e5d0f27a075d730ceee97cd9be77b344045e0c7"
+    },
+    "yt-shorts": {
+      "source": "marcsultan/youtube-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/yt-shorts/SKILL.md",
+      "computedHash": "2fbb81d9bde586be60bb8f10446e38a2488e9903cb9243772f132ebda0f79b04"
+    },
+    "yt-viral": {
+      "source": "marcsultan/youtube-agent-skill",
+      "sourceType": "github",
+      "skillPath": "skills/yt-viral/SKILL.md",
+      "computedHash": "53edb37d3b8987c8c8c07eb0046e7d512cc1e20aec53c0fadb83ddc9acda165a"
+    }
+  }
+}
