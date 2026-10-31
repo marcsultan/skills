@@ -5,10 +5,16 @@
 
 ## Install this curated set (any AI agent)
 
-One command, all 18 curated skills (marketing/content/research/creative + the 11 yt-* YouTube pipeline skills):
+One command, the **full catalog**: 2,702 skills (2,684 extracted & deduped from every repo in this account + 18 hand-curated core skills — content, research, marketing, creative, and the 11 yt-* YouTube pipeline skills):
 
 ```bash
 npx skills add marcsultan/skills -g -y
+```
+
+Install just one skill:
+
+```bash
+npx skills add marcsultan/skills@<skill-name> -g -y
 ```
 
 Update everything later:
@@ -16,6 +22,8 @@ Update everything later:
 ```bash
 npx skills update
 ```
+
+**Tip:** with 2,700 skills, prefer per-skill installs (`@<skill-name>`) — installing the full catalog makes every agent's skill list huge. The curated 18 are always a safe starting set.
 
 Scope note: `-g` = user-wide (`~/.agents/skills`, read by OpenCode, Claude, Cursor, Cline, Amp, +20 agents). Run without `-g` inside a project to install there instead. The legacy `skills/` catalog below is the deprecated Codex examples collection.
 
