@@ -1,67 +1,31 @@
-> [!IMPORTANT]
-> **This repository is deprecated.** For current Codex skill and plugin examples, use the [OpenAI Plugins repository](https://github.com/openai/plugins). If you want to add your own skills to Codex, follow the [Build plugins](https://developers.openai.com/codex/plugins/build) guide, which includes instructions for creating a skill-only plugin.
+# marcsultan/skills — Agent Skills Hub
 
-# Agent Skills
+Your complete agent skills catalog: **2,702 skills**, installable by any AI agent.
 
-## Install this curated set (any AI agent)
-
-One command, the **full catalog**: 2,702 skills (2,684 extracted & deduped from every repo in this account + 18 hand-curated core skills — content, research, marketing, creative, and the 11 yt-* YouTube pipeline skills):
+## Quick install
 
 ```bash
+# Everything (2,702 skills)
 npx skills add marcsultan/skills -g -y
-```
 
-Install just one skill:
-
-```bash
+# One skill
 npx skills add marcsultan/skills@<skill-name> -g -y
-```
 
-Update everything later:
-
-```bash
+# Sync downloads later
 npx skills update
 ```
 
-**Tip:** with 2,700 skills, prefer per-skill installs (`@<skill-name>`) — installing the full catalog makes every agent's skill list huge. The curated 18 are always a safe starting set.
+Recommended: install the skills you actually work with (`@<skill-name>`) — with 2,700 skills, an install-all floods every agent's context with skill descriptions.
 
-Scope note: `-g` = user-wide (`~/.agents/skills`, read by OpenCode, Claude, Cursor, Cline, Amp, +20 agents). Run without `-g` inside a project to install there instead. The legacy `skills/` catalog below is the deprecated Codex examples collection.
+## What's inside
 
-Agent Skills are folders of instructions, scripts, and resources that AI agents can discover and use to perform at specific tasks. Write once, use everywhere.
+- **`.agents/skills/`** — the full catalog:
+  - 18 hand-curated core skills (content, research, marketing, creative, the 11 yt-* YouTube pipeline skills)
+  - 2,684 unique skills extracted & deduped from every repo in the `marcsultan` account (legal, engineering patterns, testing, security, homelab, education, finance, and more)
+- **`skills-lock.json`** — installer lock file
+- Each skill is a folder with a validated `SKILL.md` (name + description frontmatter), ready for the skills CLI ecosystem (OpenCode, Claude, Cursor, Cline, Amp, +20 agents)
 
-Codex uses skills to help package capabilities that teams and individuals can use to complete specific tasks in a repeatable way. This repository catalogs skills for use and distribution with Codex.
+## Maintenance
 
-Learn more:
-- [Using skills in Codex](https://developers.openai.com/codex/skills)
-- [Create custom skills in Codex](https://developers.openai.com/codex/skills/create-skill)
-- [Agent Skills open standard](https://agentskills.io)
-
-## Installing a skill
-
-Skills in [`.system`](skills/.system/) are automatically installed in the latest version of Codex.
-
-To install [curated](skills/.curated/) or [experimental](skills/.experimental/) skills, you can use the `$skill-installer` inside Codex.
-
-Curated skills can be installed by name (defaults to `skills/.curated`):
-
-```
-$skill-installer gh-address-comments
-```
-
-For experimental skills, specify the skill folder. For example:
-
-```
-$skill-installer install the create-plan skill from the .experimental folder
-```
-
-Or provide the GitHub directory URL:
-
-```
-$skill-installer install https://github.com/openai/skills/tree/main/skills/.experimental/create-plan
-```
-
-After installing a skill, restart Codex to pick up new skills.
-
-## License
-
-The license of an individual skill can be found directly inside the skill's directory inside the `LICENSE.txt` file.
+- Add a new skill: create `.agents/skills/<name>/SKILL.md`, commit, push — every machine picks it up via `npx skills update`
+- Catalog rebuild: scan every repo for `SKILL.md`, dedupe by name, commit (last full rebuild: 2,684 extracted / 874 duplicates merged / 38 invalid skipped)
