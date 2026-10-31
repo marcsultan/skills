@@ -1,0 +1,3 @@
+# Overview
+
+Assess obligations under Regulation (EU) 2023/2854 for connected products, related services, statutory B2B data sharing, unfair data-contract terms, exceptional-need B2G requests, data-processing-service switching, international governmental access, interoperability, smart contracts, enforcement, and non-EU representatives. Use for Data Act scope analysis, gap assessments, product and service design, request handling, contract review, cloud exit planning, or cross-regulation mapping.

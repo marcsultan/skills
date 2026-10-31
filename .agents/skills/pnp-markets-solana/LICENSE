@@ -1,0 +1,35 @@
+NO LICENSE — all rights reserved by the original author.
+
+This skill is redistributed by the Internet Court skill package from
+its upstream source:
+
+    pnp-protocol/solana-skill
+
+That upstream project publishes NO license file and states no license
+terms. No open-source license is granted or implied by this copy, and
+the Internet Court package asserts no rights over it. Copyright remains
+entirely with the original author:
+
+    Copyright (c) the PNP Protocol authors
+
+The author may impose any terms they choose. Refer to the upstream
+source above as the authoritative original; this copy is provided for
+reference and may be out of date.
+
+Basis for inclusion:
+
+Listed by the Solana Foundation in its public agent-skills catalog at
+https://solana.com/skills (Community Skills section, published there under
+a "do your own research" notice). The Solana Foundation has confirmed to
+the Internet Court maintainers that this catalog may be vendored into this
+package. IMPORTANT LIMIT ON THAT BASIS: the Solana Foundation curates the
+catalog but does NOT own this skill and cannot grant a licence on the
+author's behalf; the author's rights are entirely unaffected by that
+confirmation. This copy is included on the strength of the work being
+published publicly and listed in an official catalogue, and is removed
+immediately on the author's request.
+
+If you are the copyright holder and want this copy removed, renamed,
+or placed under stated terms, open an issue at
+https://github.com/internet-court/internet-court-skill and it will be
+actioned. Removal requests are honoured without argument.
