@@ -1,6 +1,6 @@
 # marcsultan/skills — Agent Skills Hub
 
-Your complete agent skills catalog: **2,702 skills**, installable by any AI agent.
+Your complete agent skills catalog: **3,111 skills**, installable by any AI agent.
 
 ## Quick install
 
@@ -19,9 +19,10 @@ Recommended: install the skills you actually work with (`@<skill-name>`) — wit
 
 ## What's inside
 
-- **`.agents/skills/`** — the full catalog:
+- **`.agents/skills/`** — the full catalog (marcsultan + zaynahsultan1-gif accounts):
   - 18 hand-curated core skills (content, research, marketing, creative, the 11 yt-* YouTube pipeline skills)
   - 2,684 unique skills extracted & deduped from every repo in the `marcsultan` account (legal, engineering patterns, testing, security, homelab, education, finance, and more)
+  - 431 additional skills harvested from every repo in the `zaynahsultan1-gif` account (ruflo/claude-flow ecosystem, OpenMontage, OmniRoute, deepseek-harness, vllm, media/video tooling)
 - **`skills-lock.json`** — installer lock file
 - Each skill is a folder with a validated `SKILL.md` (name + description frontmatter), ready for the skills CLI ecosystem (OpenCode, Claude, Cursor, Cline, Amp, +20 agents)
 
