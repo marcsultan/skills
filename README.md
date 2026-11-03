@@ -1,6 +1,6 @@
 # marcsultan/skills — Agent Skills Hub
 
-Your complete agent skills catalog: **3,111 skills**, installable by any AI agent.
+Your complete agent skills catalog: **3,112 skills** (2,702 harvested + 18 curated core + 431 from zaynahsultan1-gif + 1 custom-built: scrape-router), installable by any AI agent.
 
 ## Quick install
 
