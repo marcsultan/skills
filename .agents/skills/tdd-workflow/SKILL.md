@@ -1,149 +1,43 @@
 ---
 name: tdd-workflow
-description: Test-Driven Development workflow principles. RED-GREEN-REFACTOR cycle.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+description: TDD London School workflow -- mock-first, outside-in test development
+argument-hint: "<module-path>"
+allowed-tools: Bash(npx * npm *) mcp__plugin_ruflo-core_ruflo__hooks_pre-task mcp__plugin_ruflo-core_ruflo__hooks_post-task Read Write Edit
 ---
+Follow the TDD London School (mock-first) approach:
 
-# TDD Workflow
+1. **Write the failing test first** -- define expected behavior with mocked dependencies
+2. **Run the test** -- confirm it fails for the right reason
+3. **Implement minimal code** -- make the test pass with the simplest solution
+4. **Refactor** -- clean up while keeping tests green
+5. **Repeat** -- add the next behavior
 
-> Write tests first, code second.
+Before starting: `mcp__plugin_ruflo-core_ruflo__hooks_pre-task({ description: "TDD: FEATURE_NAME" })`
+Before reporting the outcome, run the final target tests and the regression suite after the last edit. Record the actual commands, exit codes, whether tests ran, and failing test names. The initial red test is expected during TDD; only the final validation determines success.
 
----
+Call `mcp__plugin_ruflo-core_ruflo__hooks_post-task` with the observed result, including when the task is abandoned or validation is interrupted. Set `completed`, `targetTestsRan`, and `regressionTestsRan` to true only when observed; use null for missing exit codes. Skipped or unrun validation is not success. Never substitute an expected result for an observed one.
 
-## 1. The TDD Cycle
-
+The following example maps those observations to the hook input (tool-call notation):
+```javascript
+const success = completed && targetTestsRan && regressionTestsRan
+  && targetExitCode === 0 && regressionExitCode === 0;
+mcp__plugin_ruflo-core_ruflo__hooks_post-task({
+  taskId: "tdd-FEATURE",
+  success,
+  storeResults: true,
+  task: JSON.stringify({
+    feature: "FEATURE",
+    targetCommand, targetExitCode, targetTestsRan,
+    regressionCommand, regressionExitCode, regressionTestsRan,
+    failingTestNames,
+    failureReason: success ? null : failureReason
+  })
+});
 ```
-🔴 RED → Write failing test
-    ↓
-🟢 GREEN → Write minimal code to pass
-    ↓
-🔵 REFACTOR → Improve code quality
-    ↓
-   Repeat...
-```
+On failure, report `success: false` and the failing test names in `task`. If the runner failed before identifying tests, or the task was abandoned, state that reason instead of inventing test names.
 
----
-
-## 2. The Three Laws of TDD
-
-1. Write production code only to make a failing test pass
-2. Write only enough test to demonstrate failure
-3. Write only enough code to make the test pass
-
----
-
-## 3. RED Phase Principles
-
-### What to Write
-
-| Focus | Example |
-|-------|---------|
-| Behavior | "should add two numbers" |
-| Edge cases | "should handle empty input" |
-| Error states | "should throw for invalid data" |
-
-### RED Phase Rules
-
-- Test must fail first
-- Test name describes expected behavior
-- One assertion per test (ideally)
-
----
-
-## 4. GREEN Phase Principles
-
-### Minimum Code
-
-| Principle | Meaning |
-|-----------|---------|
-| **YAGNI** | You Aren't Gonna Need It |
-| **Simplest thing** | Write the minimum to pass |
-| **No optimization** | Just make it work |
-
-### GREEN Phase Rules
-
-- Don't write unneeded code
-- Don't optimize yet
-- Pass the test, nothing more
-
----
-
-## 5. REFACTOR Phase Principles
-
-### What to Improve
-
-| Area | Action |
-|------|--------|
-| Duplication | Extract common code |
-| Naming | Make intent clear |
-| Structure | Improve organization |
-| Complexity | Simplify logic |
-
-### REFACTOR Rules
-
-- All tests must stay green
-- Small incremental changes
-- Commit after each refactor
-
----
-
-## 6. AAA Pattern
-
-Every test follows:
-
-| Step | Purpose |
-|------|---------|
-| **Arrange** | Set up test data |
-| **Act** | Execute code under test |
-| **Assert** | Verify expected outcome |
-
----
-
-## 7. When to Use TDD
-
-| Scenario | TDD Value |
-|----------|-----------|
-| New feature | High |
-| Bug fix | High (write test first) |
-| Complex logic | High |
-| Exploratory | Low (spike, then TDD) |
-| UI layout | Low |
-
----
-
-## 8. Test Prioritization
-
-| Priority | Test Type |
-|----------|-----------|
-| 1 | Happy path |
-| 2 | Error cases |
-| 3 | Edge cases |
-| 4 | Performance |
-
----
-
-## 9. Anti-Patterns
-
-| ❌ Don't | ✅ Do |
-|----------|-------|
-| Skip the RED phase | Watch test fail first |
-| Write tests after | Write tests before |
-| Over-engineer initial | Keep it simple |
-| Multiple asserts | One behavior per test |
-| Test implementation | Test behavior |
-
----
-
-## 10. AI-Augmented TDD
-
-### Multi-Agent Pattern
-
-| Agent | Role |
-|-------|------|
-| Agent A | Write failing tests (RED) |
-| Agent B | Implement to pass (GREEN) |
-| Agent C | Optimize (REFACTOR) |
-
----
-
-> **Remember:** The test is the specification. If you can't write a test, you don't understand the requirement.
+Principles:
+- Mock external dependencies at boundaries
+- Test behavior, not implementation
+- One assertion per test when possible
+- Descriptive names: `should [behavior] when [condition]`

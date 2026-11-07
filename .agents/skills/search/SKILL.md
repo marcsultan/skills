@@ -1,61 +1,26 @@
 ---
 name: search
-description: Search Google via Bright Data SERP API. Returns structured JSON results with title, link, and description. Requires BRIGHTDATA_API_KEY and BRIGHTDATA_UNLOCKER_ZONE environment variables.
+description: Search memories from earlier Antigravity sessions in this repository. Use it when earlier work may already explain the code, error, decision, or command you need, so you can avoid repeating file reads, searches, or experiments.
+argument-hint: "[question] [--top-k number] [--category category-name] [--scope repo|dir|mine] [--run-id session-id]"
+disable-model-invocation: true
 ---
 
-# Bright Data - Google Search
+# Search memories
 
-Search Google and get structured JSON results using Bright Data's SERP API.
+Call `search_memories` with the user's question. Treat `--top-k`, `--category`,
+`--scope`, and `--run-id` as tool arguments instead of including them in the
+query.
 
-## Setup
+Omit `top_k` to use Mem0's configured default. Omit `category` to search every
+category. Omit `scope` to use the configured default, normally `repo`: this
+repository's shared memory, which everyone who works in it contributes to,
+plus your own preferences.
 
-**1. Get your API Key:**
-Get a key from [Bright Data Dashboard](https://brightdata.com/cp).
+Pass `scope` when the question needs something else: `dir` to narrow the
+shared memory to the directory you are working in (a package inside a
+monorepo), `mine` for your own preferences alone.
 
-**2. Create a Web Unlocker zone:**
-Create a zone at brightdata.com/cp by clicking "Add" (top-right), selecting "Unlocker zone".
-
-**3. Set environment variables:**
-```bash
-export BRIGHTDATA_API_KEY="your-api-key"
-export BRIGHTDATA_UNLOCKER_ZONE="your-zone-name"
-```
-
-## Usage
-
-```bash
-bash scripts/search.sh "query" [cursor]
-```
-
-**Parameters:**
-- `query` (required): Search term
-- `cursor` (optional): Page number for pagination (0-indexed, default: 0)
-
-**Examples:**
-```bash
-# Basic search
-bash scripts/search.sh "climate change"
-
-# Get page 2 of results
-bash scripts/search.sh "climate change" 1
-```
-
-## Output Format
-
-Returns JSON with structured `organic` array:
-```json
-{
-  "organic": [
-    {
-      "link": "https://example.com/article",
-      "title": "Article Title",
-      "description": "Brief description of the page..."
-    }
-  ]
-}
-```
-
-## Dependencies
-
-- `curl` - For API requests
-- `jq` - For JSON processing
+Pass `run_id` with any scope to retrieve memories saved in a specific coding-agent
+session. Omit `run_id` to search across sessions. It filters the memories returned;
+it does not identify the session making the search request. Use a known session ID,
+never invent one. Return the tool's result directly.

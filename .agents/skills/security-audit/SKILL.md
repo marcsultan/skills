@@ -1,58 +1,135 @@
 ---
 name: security-audit
-category: quality-security
-description: Deep security audit covering OWASP Top 10, authentication, authorization, data protection, dependency vulnerabilities, and secrets scanning. Delegates to the Centinela (QA) agent.
+description: >
+  Comprehensive security scanning and vulnerability detection. Includes input validation, path traversal prevention, CVE detection, and secure coding pattern enforcement.
+  Use when: authentication implementation, authorization logic, payment processing, user data handling, API endpoint creation, file upload handling, database queries, external API integration.
+  Skip when: read-only operations on public data, internal development tooling, static documentation, styling changes.
 ---
 
-# Security Audit
+# Security Audit Skill
 
-Performs a deep security audit using the Centinela (QA) agent.
+## Purpose
+Comprehensive security scanning and vulnerability detection. Includes input validation, path traversal prevention, CVE detection, and secure coding pattern enforcement.
 
-## When to Use This Skill
+## When to Trigger
+- authentication implementation
+- authorization logic
+- payment processing
+- user data handling
+- API endpoint creation
+- file upload handling
+- database queries
+- external API integration
 
-- Before a release to verify security posture
-- After significant code changes that touch authentication, authorization, or data handling
-- Periodic security review of the codebase
-- When adding new dependencies or external integrations
+## When to Skip
+- read-only operations on public data
+- internal development tooling
+- static documentation
+- styling changes
 
-## What This Skill Does
+## Commands
 
-1. Runs the SIGN IN checklist
-2. Performs OWASP Top 10 systematic check (A01-A10)
-3. Scans for hardcoded secrets, API keys, tokens, and connection strings
-4. Audits dependencies for known CVEs
-5. Checks smart contracts if Solidity is present (reentrancy, overflow, access control)
-6. Runs Security Verification and Quality Verification checklists (TIME OUT)
-7. Issues verdict and writes report to `docs/reviews/security-audit-{date}.md`
-8. Prepares findings handoff to Dev agent
+### Full Security Scan
+Run comprehensive security analysis on the codebase
 
-## How to Use
-
-### Basic Usage
-
-```
-/security-audit
-```
-
-### Scoped Audit
-
-```
-/security-audit src/auth/ src/api/
+```bash
+npx @claude-flow/cli security scan --depth full
 ```
 
-## Example
+**Example:**
+```bash
+npx @claude-flow/cli security scan --depth full --output security-report.json
+```
 
-**User**: `/security-audit src/payments/`
+### Input Validation Check
+Check for input validation issues
 
-**Output**: A security audit report at `docs/reviews/security-audit-2026-02-23.md` with:
-- OWASP Top 10 findings organized by severity
-- Secrets scan results
-- Dependency vulnerability report
-- Verdict: APPROVED or CHANGES REQUIRED
-- Fix order recommendation for the Dev agent
+```bash
+npx @claude-flow/cli security scan --check input-validation
+```
 
-## Tips
+**Example:**
+```bash
+npx @claude-flow/cli security scan --check input-validation --path ./src/api
+```
 
-- If no scope is specified, the entire `src/` directory is audited
-- Critical findings trigger the Non-Normal emergency checklist
-- The agent will never attempt to fix vulnerabilities — only document them
+### Path Traversal Check
+Check for path traversal vulnerabilities
+
+```bash
+npx @claude-flow/cli security scan --check path-traversal
+```
+
+### SQL Injection Check
+Check for SQL injection vulnerabilities
+
+```bash
+npx @claude-flow/cli security scan --check sql-injection
+```
+
+### XSS Check
+Check for cross-site scripting vulnerabilities
+
+```bash
+npx @claude-flow/cli security scan --check xss
+```
+
+### CVE Scan
+Scan dependencies for known CVEs
+
+```bash
+npx @claude-flow/cli security cve --scan
+```
+
+**Example:**
+```bash
+npx @claude-flow/cli security cve --scan --severity high
+```
+
+### Security Audit Report
+Generate full security audit report
+
+```bash
+npx @claude-flow/cli security audit --report
+```
+
+**Example:**
+```bash
+npx @claude-flow/cli security audit --report --format markdown --output SECURITY.md
+```
+
+### Threat Modeling
+Run threat modeling analysis
+
+```bash
+npx @claude-flow/cli security threats --analyze
+```
+
+### Validate Secrets
+Check for hardcoded secrets
+
+```bash
+npx @claude-flow/cli security validate --check secrets
+```
+
+
+## Scripts
+
+| Script | Path | Description |
+|--------|------|-------------|
+| `security-scan` | `.agents/scripts/security-scan.sh` | Run full security scan pipeline |
+| `cve-remediate` | `.agents/scripts/cve-remediate.sh` | Auto-remediate known CVEs |
+
+
+## References
+
+| Document | Path | Description |
+|----------|------|-------------|
+| `Security Checklist` | `docs/security-checklist.md` | Security review checklist |
+| `OWASP Guide` | `docs/owasp-top10.md` | OWASP Top 10 mitigation guide |
+
+## Best Practices
+1. Check memory for existing patterns before starting
+2. Use hierarchical topology for coordination
+3. Store successful patterns after completion
+4. Document any new learnings

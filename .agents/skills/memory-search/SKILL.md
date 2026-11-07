@@ -1,75 +1,61 @@
 ---
 name: memory-search
-description: Search conversation history and semantic memory to recall previous discussions, decisions, and context. Use when the user asks to "search memory", "what did we discuss", "remember when", "find previous conversation", "check history", or before starting work to recall prior decisions.
+description: Search Ruflo memory with semantic retrieval, keyword/semantic union, or optional SmartRetrieval reranking
+allowed-tools: Bash Read mcp__plugin_ruflo-core_ruflo__memory_search mcp__plugin_ruflo-core_ruflo__memory_store mcp__plugin_ruflo-core_ruflo__memory_list mcp__plugin_ruflo-core_ruflo__memory_retrieve mcp__plugin_ruflo-core_ruflo__memory_search_unified mcp__plugin_ruflo-core_ruflo__agentdb_pattern-search mcp__plugin_ruflo-core_ruflo__agentdb_context-synthesize
+argument-hint: "<query> [--hybrid] [--smart] [--namespace NAME]"
 ---
 
-# AI Maestro Memory Search
+# Memory Search
 
-Search your conversation history using semantic, keyword, and symbol matching. Recall past decisions, discussions, and context across sessions. Part of the [AI Maestro](https://github.com/23blocks-OS/ai-maestro) suite.
+Search Ruflo's stored memories. Select a strategy supported by the Ruflo CLI or MCP tool, and report which one actually ran.
 
-## Prerequisites
+## Strategy selection
 
-Requires [AI Maestro](https://github.com/23blocks-OS/ai-maestro) running locally. Memory indexing uses CozoDB for vector search.
+- **Default:** semantic retrieval through `memory search` or MCP `memory_search`.
+- **`--hybrid`:** CLI keyword + semantic result union, deduplicated and sorted by score. This is not the `ruvector search` CLI and does not claim Graph RAG or sparse/dense RRF.
+- **`--smart`:** request query expansion, RRF across variants, recency weighting, and MMR diversity. The MCP tool can fall back to plain search if the installed memory package lacks `smartSearch`; inspect the returned fallback note before claiming SmartRetrieval ran.
+- **Cross-namespace:** MCP `memory_search_unified` merges and deduplicates results from multiple namespaces.
 
-```bash
-# Install memory tools
-git clone https://github.com/23blocks-OS/ai-maestro-plugins.git
-cd ai-maestro-plugins && ./install-memory-tools.sh
-```
+If the user requests `--graph-rag`, explain that this plugin has no supported text-query Graph RAG command. Offer `--smart` semantic retrieval as a clearly labeled fallback; do not claim graph traversal.
 
-## Core Behavior
+## Steps
 
-Before starting any task, search memory for relevant context:
+1. Parse the query, optional namespace, result limit, and strategy flags. Omit `--namespace` to search all namespaces.
+   For CLI commands, treat the query as untrusted shell input: use POSIX single-quote escaping for embedded apostrophes and reject embedded newlines. Do not interpolate it inside double quotes.
+2. Run one of the supported paths:
 
-```
-Receive instruction -> Search memory -> Then proceed
-```
+   **Semantic (default)**
+   ```bash
+   npx @claude-flow/cli@latest memory search --query 'QUERY' --limit 10
+   ```
+   MCP: `mcp__plugin_ruflo-core_ruflo__memory_search({ query: "QUERY", limit: 10 })`
 
-## Commands
+   **Keyword + semantic union (`--hybrid`)**
+   ```bash
+   npx @claude-flow/cli@latest memory search --query 'QUERY' --type hybrid --limit 10
+   ```
+   Add `--namespace NAMESPACE` only when the user requests one.
 
-| Command | Description |
-|---------|-------------|
-| `memory-search.sh "<query>"` | Hybrid search (recommended) |
-| `memory-search.sh "<query>" --mode semantic` | Find conceptually related |
-| `memory-search.sh "<query>" --mode term` | Exact text matching |
-| `memory-search.sh "<query>" --mode symbol` | Code symbol matching |
-| `memory-search.sh "<query>" --role user` | Only user messages |
-| `memory-search.sh "<query>" --role assistant` | Only assistant messages |
+   **Smart retrieval (`--smart`)**
+   ```bash
+   npx @claude-flow/cli@latest memory search --query 'QUERY' --smart --limit 10
+   ```
+   MCP: `mcp__plugin_ruflo-core_ruflo__memory_search({ query: "QUERY", smart: true, limit: 10 })`
 
-## Search Modes
+   **Cross-namespace bridge search**
+   `mcp__plugin_ruflo-core_ruflo__memory_search_unified({ query: "QUERY", limit: 10 })`
 
-| Mode | Best For |
-|------|----------|
-| `hybrid` (default) | General search, most cases |
-| `semantic` | Related concepts, different wording |
-| `term` | Exact function/class names |
-| `symbol` | Code identifiers across contexts |
+3. For a complex query, optionally request AgentDB context synthesis with its registered schema:
+   `mcp__plugin_ruflo-core_ruflo__agentdb_context-synthesize({ query: "QUERY", maxEntries: 10 })`
+4. Present the returned entries with namespace attribution. Distinguish raw `similarity` from SmartRetrieval's `rankingScore`; neither is a probability of truth. State when SmartRetrieval fell back to plain search.
 
-## Usage Examples
+## Namespace guide
 
-```bash
-# User asks to continue previous work
-memory-search.sh "authentication"
-
-# Find a specific component discussion
-memory-search.sh "PaymentService" --mode term
-
-# Find related design discussions
-memory-search.sh "error handling patterns" --mode semantic
-
-# Find code symbol references
-memory-search.sh "processPayment" --mode symbol
-```
-
-## Combining with Other Skills
-
-For complete context, pair with docs-search and graph-query:
-```bash
-memory-search.sh "feature"       # What did we discuss?
-docs-search.sh "feature"         # What do docs say?
-graph-describe.sh ComponentName  # What is the structure?
-```
-
-## Full AI Maestro Experience
-
-This skill is part of the [AI Maestro](https://github.com/23blocks-OS/ai-maestro) platform, which provides **6 skills** for AI agent orchestration: messaging, memory, docs, graph, planning, and agent management.
+| Namespace | Typical content |
+|-----------|-----------------|
+| `patterns` | Reusable approaches |
+| `tasks` | Task context |
+| `solutions` | Resolved problems |
+| `feedback` | User corrections |
+| `security` | Security notes |
+| (omit) | All available namespaces |

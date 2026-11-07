@@ -1,370 +1,95 @@
 ---
 name: linkedin-profile-optimizer
-description: Optimize a LinkedIn profile for searchability, recruiter visibility, and engagement. Use when the user mentions LinkedIn profile, headline, About section, recruiter visibility, or social hiring.
+description: "Audit and rewrite a LinkedIn profile end-to-end for 2026: headline, About 7-step, Featured, banner, photo, Experience metrics, Skills, custom URL, recommendations. Triggers on \"review my profile\", \"rewrite my headline\", \"fix my About\", \"optimize banner\", \"profile audit\", \"LinkedIn bio\". Converts resume-style profiles to ones that convert 3-5x better. Not for writing feed content (use linkedin-post-writer)."
 ---
 
 # LinkedIn Profile Optimizer
 
-## When to Use This Skill
+Audit the nine components of a LinkedIn profile (photo, banner, headline, About, Featured, Experience, Skills, custom URL, recommendations) against 2026 best practices, then rewrite each section that needs it. Optimized profiles get ~3.9x more views and convert visitors 3-5x better than default/resume-style profiles.
 
-Use this skill when the user wants to:
-- Optimize their LinkedIn profile for job searching
-- Improve LinkedIn visibility and searchability
-- Sync their resume with their LinkedIn profile
-- Attract recruiters and job opportunities
-- Mentions: "LinkedIn", "LinkedIn profile", "optimize LinkedIn", "LinkedIn headline", "recruiter"
+## When to use
 
-## Core Capabilities
+- User asks for an audit and pastes their profile text (a bare URL is not readable, see Input)
+- User wants to rewrite their headline, About section, or Featured section
+- User is launching a content strategy and needs the profile to match
+- Any of: "review my profile", "fix my headline", "optimize bio", "profile audit", "LinkedIn optimization"
 
-- Optimize headline for searchability
-- Write compelling About/Summary sections
-- Structure Experience section for impact
-- Improve profile completeness score
-- Add relevant keywords for recruiter searches
-- Align LinkedIn with resume while leveraging platform differences
+## Input
 
-## LinkedIn vs. Resume: Key Differences
+**Paste the profile, do not just link it.** The read layer covers posts, comments and engagers; there is no profile actor, so a profile URL cannot be fetched, with an APIFY_TOKEN or without one. Open the profile, copy the sections, paste them in. Screenshots of the visual parts work too.
 
-| Aspect | Resume | LinkedIn |
-|--------|--------|----------|
-| Length | 1-2 pages | Unlimited |
-| Tone | Formal | More conversational |
-| Keywords | Job-specific | Industry-wide |
-| Audience | One specific employer | All recruiters |
-| Updates | Per application | Always current |
-| Personality | Minimal | Show more |
+- Profile text: headline, About, Experience entries, Skills, custom URL
+- The visual three (photo, banner, Featured): screenshots, or a sentence describing each
+- Goal: **clients** / **job seeking** / **authority** — Featured and CTA vary by goal
+- Optional: draft content to grade against the existing profile
 
-## Profile Section Optimization
+If the user supplies only a URL, ask for the text before scoring anything. Never score a section you have not been shown, and never infer profile content from the URL slug.
 
-### 1. Profile Photo
+## Output
 
-**Requirements:**
-- Professional headshot (not casual photo)
-- Face takes up 60% of frame
-- Neutral or branded background
-- Good lighting, high resolution
-- Appropriate attire for your industry
-- Friendly expression (slight smile)
+A structured audit + rewrite in this shape:
 
-**Impact:** Profiles with photos get 21x more views
+1. **Scorecard** (9 sections, pass/fail/needs-work)
+2. **Priority fixes** (ranked by impact)
+3. **Before → After rewrites** for each failing section
+4. **Expected uplift** (based on benchmark data)
 
-### 2. Background Banner
+## Steps
 
-**Best Practices:**
-- Use a professional design or industry-related image
-- Can include personal branding elements
-- Size: 1584 x 396 pixels
-- Avoid busy patterns that distract from your photo
+1. **Intake.** Collect profile state + goal. If only a URL arrived, ask for the pasted text first. Flag missing sections.
+2. **Score each of 9 sections** against the checklist (see references/).
+3. **Rewrite headline** using `[What You Do] | [Who You Help] [Achieve What Result]` — fit all 220 chars.
+4. **Rebuild About** with 7-step structure; verify first **265-275 chars** hook before "see more".
+5. **Curate Featured** (3 strong items) matched to the goal:
+   - **Clients:** lead magnet + case study with results + calendar link
+   - **Job seeking:** portfolio + best work samples + top-performing post
+   - **Authority:** best content + media/podcast features + newsletter signup
+6. **Rewrite Experience bullets** as `action verb + specific metric`. Add 5+ skills per role. Pin top 3 skills.
+7. **Claim custom URL** (linkedin.com/in/firstnamelastname, not the `-123abc456` default).
+8. **Draft recommendation requests** with specifics ("about [project/skill]") — don't send LinkedIn's generic template.
+9. **Deliver before/after diff** + expected uplift (3.9x views, 3-5x conversion, 71% more likely to land interviews).
 
-**Options:**
-- Company brand (if appropriate)
-- Industry-related imagery
-- Professional abstract design
-- Personal brand statement
+## Nine-component scorecard
 
-### 3. Headline (Most Important for Searchability)
+| # | Section | Pass criteria (2026) |
+|---|---------|----------------------|
+| 1 | **Photo** | ≥400x400, face fills 60% of frame, <3 years old, natural light, slight smile |
+| 2 | **Banner** | 1584x396, text in right 2/3, high contrast, includes value prop + CTA, tests well on mobile |
+| 3 | **Headline** | Uses all 220 chars; format `[What You Do] | [Who You Help] [Result]` |
+| 4 | **About** | 200-300 words, first-person, 7-step structure, hook in first 265-275 chars |
+| 5 | **Featured** | 3 items, matched to goal, custom 1200x627 thumbnails |
+| 6 | **Experience** | Every bullet = `action verb + metric`, 5+ skills per role, media attached |
+| 7 | **Skills** | 50 listed, top 3 pinned, mirrors target job descriptions, ≥1 endorsement each |
+| 8 | **Custom URL** | `linkedin.com/in/firstnamelastname` (not the default hash) |
+| 9 | **Recommendations** | At least 3 recent, specific (not generic), from diverse contexts |
 
-**Character Limit:** 220 characters
+## Key benchmarks (from co.actor research)
 
-**Formula:** [Role] | [Key Expertise] | [Value Proposition]
+- Optimized About sections: **3.9x more views**
+- 5+ listed skills: **3x more connection requests**
+- Comprehensive profile: **71% more likely to land interviews**
+- Featured section content: **30% longer viewing time**
+- Personal founder profile vs company page: **315% more engagement, 270% more conversions**
 
-**Examples:**
+## Hard rules
 
-❌ **Weak Headlines:**
-- "Looking for opportunities"
-- "Unemployed Product Manager"
-- "Student at University"
-- "Open to work"
+Global voice rules: see root `SKILL.md` §Voice rules. Additional skill-specific rules:
 
-✅ **Strong Headlines:**
-```
-Senior Product Manager | B2B SaaS | Driving 0→1 Products from Concept to $10M ARR
+- First person ("I help...") never third person ("Jane is a passionate...")
+- Never "passionate thought leader" / "driven professional" / "results-oriented" (profile-specific AI vocab)
+- Avoid wall-of-text. Use line breaks in About section
+- 80% of users leave Featured empty. Filling it is a free edge
 
-Data Scientist | Machine Learning & Analytics | Turning Data into Business Decisions
+## Reference files
 
-Software Engineer | Python, AWS, Kubernetes | Building Scalable Systems at Fortune 500
+- `references/profile-headline-formulas.md` — 220-char formula + before/after examples
+- `references/about-section-templates.md` — 7-step structure with character budgets
+- `references/featured-section-playbook.md` — goal-matched content types
+- `references/banner-photo-specs.md` — dimensions, composition, mobile test
+- `references/experience-skills-rules.md` — bullet rewriting + skills strategy + custom URL + recommendations
 
-Marketing Director | Growth & Brand Strategy | 3x Revenue Growth at Series B Startups
-```
+## Related skills
 
-**Keyword Strategy:**
-Include terms recruiters search for:
-- Your job title (and variations)
-- Key skills (languages, tools, methodologies)
-- Industry terms
-- Certifications
-
-### 4. About Section (Summary)
-
-**Character Limit:** 2,600 characters
-**Recommended Length:** 1,500-2,000 characters (3-5 paragraphs)
-
-**Structure:**
-
-```
-[HOOK - Compelling first line that shows up in preview]
-
-[PARAGRAPH 1: Who you are and what you do]
-
-[PARAGRAPH 2: Your key achievements and specialties]
-
-[PARAGRAPH 3: What you're looking for or passionate about]
-
-[SKILLS LIST: Core competencies, searchable keywords]
-
-[CALL TO ACTION: How to reach you]
-```
-
-**Example:**
-
-```
-I help SaaS companies turn product ideas into revenue.
-
-For the past 8 years, I've been building products that people actually want to use. From a payments platform that processed $50M monthly to a developer tool used by 100K+ engineers, I've led cross-functional teams from idea to launch and beyond.
-
-What I do best:
-→ Transform ambiguous customer problems into clear product roadmaps
-→ Build and lead high-performing product teams
-→ Drive growth through data-informed decision making
-→ Bridge technical and business stakeholders
-
-Currently, I'm a Senior Product Manager at [Company], where I lead our API platform serving 500+ enterprise customers. Previously, I led product at [Previous Company] through their Series B and 10x growth.
-
-Key skills: Product Strategy, Roadmap Planning, Agile/Scrum, User Research, A/B Testing, SQL, Data Analysis, Stakeholder Management, B2B SaaS, API Products
-
-Let's connect! I'm always happy to chat about product, SaaS, or career advice for aspiring PMs. Reach me at [email].
-```
-
-**First Line is Crucial:**
-Only ~300 characters show before "see more" - make them count!
-
-### 5. Experience Section
-
-**Key Differences from Resume:**
-- Can be longer and more detailed
-- Should include media (presentations, links)
-- Can show personality
-- Update regularly (not just when job hunting)
-
-**For Each Role Include:**
-- Clear job title
-- Company (with logo linked)
-- Date range
-- Location
-- Description (2-3 sentences about the role)
-- 4-6 bullet points with achievements
-- Media attachments if available
-
-**Example:**
-
-```
-Senior Product Manager
-TechCorp Inc. · Full-time
-Jan 2021 - Present · 3 yrs 1 mo
-San Francisco, CA · Hybrid
-
-Leading product strategy for TechCorp's API Platform, serving 500+ enterprise customers and generating $20M ARR.
-
-• Grew platform revenue from $5M to $20M ARR by launching 3 new product lines and expanding into enterprise segment
-• Led cross-functional team of 15 (engineering, design, data) to deliver 25+ features with 95% on-time delivery rate  
-• Improved customer retention from 82% to 94% through proactive feature development based on usage analytics
-• Established product analytics framework using Amplitude, increasing feature adoption by 40%
-• Collaborated with sales team to close 50+ enterprise deals worth $10M+ by participating in technical sales calls
-
-Skills: Product Management · B2B SaaS · API Design · Agile Methodology · Stakeholder Management
-```
-
-### 6. Skills Section
-
-**Strategy:**
-- List up to 50 skills (use all 50!)
-- Order by relevance and endorsements
-- Get endorsements for top skills
-- Include both technical and soft skills
-
-**Categories to Include:**
-- Job-specific skills (Product Management, Data Analysis)
-- Tools (JIRA, Salesforce, Python)
-- Methodologies (Agile, Six Sigma)
-- Soft skills (Leadership, Communication)
-- Industry terms (B2B, SaaS, Enterprise)
-
-**Top 3 Featured Skills:**
-Choose your three most important, most endorsed skills
-
-### 7. Featured Section
-
-**Use For:**
-- Portfolio pieces
-- Published articles
-- Presentations
-- Media coverage
-- Important posts
-- Project highlights
-
-**Why It Matters:**
-Appears prominently on profile - showcase your best work
-
-### 8. Recommendations
-
-**Target:** 5-10 quality recommendations
-
-**Best Sources:**
-- Former managers
-- Direct reports
-- Cross-functional partners
-- Clients/customers
-
-**How to Get Them:**
-1. Give recommendations first
-2. Ask specific people directly
-3. Make it easy - suggest talking points
-4. Time it right (after successful project)
-
-## Keyword Optimization
-
-### Finding Keywords
-1. Search job descriptions for your target role
-2. Look at profiles of people in roles you want
-3. Use LinkedIn's Skills section suggestions
-4. Check industry publications for terminology
-
-### Keyword Placement
-Place keywords in:
-- Headline (highest weight)
-- About section (multiple times naturally)
-- Experience descriptions
-- Skills section
-- Recommendations (ask recommenders to use)
-
-### Search Algorithm Tips
-- Exact matches matter (use exact phrases)
-- Keyword density helps (repeat important terms)
-- Recent activity boosts visibility
-- Complete profiles rank higher
-- Engagement increases reach
-
-## Profile Completeness Checklist
-
-**All-Star Profile Requirements:**
-- ✅ Professional photo
-- ✅ Custom headline (not just job title)
-- ✅ Current position with description
-- ✅ Two past positions
-- ✅ Education
-- ✅ At least 5 skills
-- ✅ Industry and postal code
-- ✅ 50+ connections
-
-**Beyond All-Star:**
-- ✅ Custom background banner
-- ✅ Featured section populated
-- ✅ About section (1500+ characters)
-- ✅ Rich media in Experience
-- ✅ 500+ connections
-- ✅ Recommendations (5+)
-- ✅ All 50 skills listed
-- ✅ Volunteer experience
-- ✅ Certifications
-
-## Recruiter Visibility Settings
-
-### Open to Work Feature
-**Settings to configure:**
-- Job titles you're interested in
-- Location preferences
-- Start date
-- Job types (full-time, contract, etc.)
-
-**Visibility Options:**
-- All LinkedIn members (shows green badge)
-- Recruiters only (hidden, more discreet)
-
-### Profile Visibility
-Ensure these are ON:
-- Profile viewing options: Show full profile
-- Sharing profile edits: Your choice
-- Represent in LinkedIn Services: ON (if relevant)
-
-## Content Strategy
-
-### Why Post Content?
-- Increases profile visibility
-- Demonstrates expertise
-- Builds personal brand
-- Attracts opportunities
-
-### Content Types:
-1. Industry insights/opinions
-2. Professional lessons learned
-3. Career milestones
-4. Helpful resources
-5. Engagement with others' content
-
-### Posting Frequency:
-- Minimum: 1x per week
-- Optimal: 3-5x per week
-- Comment/engage: Daily
-
-## Output Format
-
-When optimizing a LinkedIn profile:
-
-```markdown
-# LINKEDIN PROFILE OPTIMIZATION
-
-## Current Profile Assessment
-**Completeness:** X%
-**Searchability Score:** X/10
-**Key Issues:** [List]
-
-## Optimized Sections
-
-### Headline
-**Current:** [Their current headline]
-**Optimized:** [New headline with keywords]
-
-### About Section
-[Full optimized About section text]
-
-### Experience Improvements
-**[Company Name]**
-- Add: [Suggested additions]
-- Modify: [Suggested changes]
-- Media to add: [Suggestions]
-
-### Skills to Add
-[List of skills to add based on target roles]
-
-### Keywords Integrated
-[List of keywords added throughout profile]
-
-## Action Items
-1. [ ] Update headline
-2. [ ] Rewrite About section
-3. [ ] Update current role description
-4. [ ] Add X skills
-5. [ ] Request X recommendations
-6. [ ] Add featured content
-7. [ ] Upload professional photo
-```
-
-## Resume-to-LinkedIn Sync
-
-### What to Keep the Same:
-- Core achievements and metrics
-- Job titles and dates
-- Key skills and qualifications
-- Overall career narrative
-
-### What to Expand:
-- More detail in descriptions
-- Additional context
-- More bullets per role
-- Personality and voice
-
-### What to Adjust:
-- Tone (more conversational)
-- Length (can be longer)
-- Keywords (broader than job-specific)
-- Call to action (add contact info)
+- `linkedin-content-planner` — post pillars should echo the profile's headline/About thesis
+- `linkedin-post-writer` — Featured section rotates quarterly; pin your flagship post
+- `linkedin-humanizer` — scrub profile copy for the same AI tells we scrub from posts

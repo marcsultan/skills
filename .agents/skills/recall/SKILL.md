@@ -1,110 +1,74 @@
 ---
 name: recall
-description: >
-  Search Origin's local memory by query. Targeted lookup, not orientation.
-  Invoked as `/recall <query>`. Use when the user asks "do you
-  remember", "what do you know about", "look up".
-argument-hint: "<query>"
-allowed-tools: ["mcp__plugin_origin_origin__recall"]
+description: Search agentmemory for past observations, sessions, and learnings about a topic using hybrid BM25 plus vector plus graph search. Use when the user says "recall", "what did we do about", "did we ever", "have we seen", or needs context from past sessions.
+argument-hint: "[search query]"
+user-invocable: true
 ---
 
-# /recall
+The user wants to recall past context about: $ARGUMENTS
 
-Search Origin's memory by natural-language query. Returns matching memories
-ranked by hybrid vector + FTS search, then re-ordered by the agent if it
-helps.
+## Quick start
 
-## Two phases
-
-When a local model or API key is configured, the daemon can rerank and
-expand server-side. In local memory mode it cannot. The skill always does
-**agent-side expansion and rerank** itself — cheap, makes results good in
-both modes.
-
-### Phase 1 — expand the query (agent-side)
-
-Before calling `recall`, rewrite the user's query into a more
-search-friendly form:
-
-- Replace pronouns with the referent ("it" → the actual thing).
-- Expand abbreviations the embedder is unlikely to know.
-- Add the obvious synonym when the original term is too narrow (e.g.
-  "auth" → "auth OR authentication").
-
-Don't over-expand. If the query is already specific, leave it alone.
-One recall call per `/recall` invocation — duplicate calls double
-embedding load and the merge step is rarely worth it. The daemon's
-own `search_memory_expanded` exists for the multi-query case; if it
-matters, use that endpoint instead of issuing parallel calls here.
-
-### Phase 2 — call the MCP tool
-
-```
-recall(query="<expanded query>", space=<inferred>, memory_type=<inferred>)
+```json
+memory_smart_search { "query": "jwt refresh token rotation", "limit": 10 }
 ```
 
-Inferences (do not ask the user):
+Expected output:
 
-- `space`: current working directory (e.g. `~/Repos/origin/...` → `"origin"`),
-  the topic being discussed, or whatever space was mentioned in recent turns.
-  Always pass when scope is known; if uncertain, run `list_spaces` later
-  (post-PR-C) or omit.
-- `memory_type`: only when the query itself names a type ("decision on X",
-  "lesson about Y", "preference for Z"). Otherwise omit and let hybrid
-  search rank.
-- `limit`: default 10. Use 3-5 for quick lookups, 10-20 for exploration.
-
-### Phase 3 — rerank (agent-side)
-
-The daemon returns hits ranked by hybrid search. That ranking is good but
-not perfect — it doesn't know the user's exact intent.
-
-Re-read the returned memories against the *original* query. Promote the
-ones that directly answer the question; demote ones that just share
-keywords.
-
-Show the user the top 3-5 reranked hits. Surface the rest only if asked.
-
-### Phase 4 — render revision context (per result)
-
-Each memory may carry revision fields: `version`, `pending_revision`,
-`merged_from`, `last_delta_summary`. Most memories are fresh (v1, none
-set) — render nothing extra for those. Only add a tag line when
-something meaningful is present.
-
-**Condition:** emit the tag line when any of these holds:
-- `version > 1`
-- `merged_from` is non-empty
-- `pending_revision == true`
-
-**Format** — one compact line above the memory body:
-
-```
-<id>  v<N> (merged <K> memories)         ← merged_from has K entries
-<id>  v<N>, pending revision against <id> ← pending_revision true
-<id>  v<N> — <last_delta_summary>         ← version > 1, delta populated
-<id>  v<N>                                ← version > 1, no delta
+```text
+2 results across 2 sessions.
+[importance 8] decision · "Rotate refresh tokens on every use" (session 7f3a9c21)
+[importance 5] code · "limit.ts counts per-IP" (session b21d004e)
 ```
 
-Rules:
-- Merged takes precedence over pending_revision in the label.
-- Omit `— <delta>` when `last_delta_summary` is empty or null.
-- Skip the tag line entirely when version == 1 (or null) and no other
-  flag is set. Preserves current output for fresh memories.
+## Why
 
-## When to use
+Only surface what the tool returned. Never fabricate an observation, a session
+id, or an importance score. If nothing comes back, say so.
 
-- "What did I say about X?"
-- "Do you remember the decision on Y?"
-- Need a specific fact before continuing.
+## Workflow
 
-## When NOT to use
+1. Call `memory_smart_search` with the user's text as `query` and `limit: 10`.
+   Pass `project` when the user scopes to a specific repo and `agentId` when
+   they request one agent's history.
+   Use `targetLayer: "memory"` for explicitly saved knowledge, or
+   `targetLayer: "observation"` for captured activity. Omit it for mixed search.
+2. Search results are compact. Before quoting full content or describing
+   provenance, call `memory_smart_search` with the selected IDs as a
+   comma-separated `expandIds` string and the same project, agent, and layer
+   filters. If expansion fails or the record is no longer available, report
+   that limitation; a title alone is not the full fact.
+3. Group expanded observations by session and show the returned type, title,
+   and narrative. Include provenance only when the response supplies it.
+4. Lead with the high-signal observations (importance >= 7).
+5. With `memory_recall`, inspect `matched_count`, `excluded_by_budget`, and
+   `content_truncated` before treating an empty or shortened response as absent
+   knowledge. Recover full content with `memory_smart_search` using `expandIds`
+   and the same project, agent, and layer filters. `minimum_budget` reports the
+   estimated budget needed for a minimal preview when the budget is too small.
+6. If there are no matches, suggest 2-3 alternative search terms and stop. Do not guess.
 
-- Broad session orientation → use `/brief` instead.
-- Storing a new memory → use `/capture`.
+## Anti-patterns
 
-## Hint: write specific queries
+WRONG: results are empty, so you write "We probably discussed token expiry last
+week" from assumption.
 
-"Alice database preference" finds more than "database stuff". The semantic
-matcher rewards specificity. If too many results return, add filters rather
-than making the query longer.
+RIGHT: "No memories matched that query. Try `refresh token`, `session expiry`,
+or `auth rotation`."
+
+## Checklist
+
+- Every observation shown came from the tool response.
+- Results grouped by session, high-importance first.
+- Empty results trigger alternative-term suggestions, not invention.
+- No session id or score was paraphrased or rounded.
+
+## See also
+
+- `remember`: the write side; recall retrieves what it stores.
+- `recap`, `handoff`, `session-history`: session-scoped views of the same data.
+- `memory-discipline`: when to run this search unprompted.
+
+## Troubleshooting
+
+See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) if `memory_smart_search` is not available.

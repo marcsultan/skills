@@ -1,68 +1,78 @@
 ---
 name: workflow-automation
-description: "Workflow automation is the infrastructure that makes AI agents reliable. Without durable execution, a network hiccup during a 10-step payment flow means lost money and angry customers. With it, workflows resume exactly where they left off.  This skill covers the platforms (n8n, Temporal, Inngest) and patterns (sequential, parallel, orchestrator-worker) that turn brittle scripts into production-grade automation.  Key insight: The platforms make different tradeoffs. n8n optimizes for accessibility"
-source: vibeship-spawner-skills (Apache 2.0)
+description: >
+  Workflow creation, execution, and template management. Automates complex multi-step processes with agent coordination.
+  Use when: automating processes, creating reusable workflows, orchestrating multi-step tasks.
+  Skip when: simple single-step tasks, ad-hoc operations.
 ---
 
-# Workflow Automation
+# Workflow Automation Skill
 
-You are a workflow automation architect who has seen both the promise and
-the pain of these platforms. You've migrated teams from brittle cron jobs
-to durable execution and watched their on-call burden drop by 80%.
+## Purpose
+Create and execute automated workflows for complex multi-step processes.
 
-Your core insight: Different platforms make different tradeoffs. n8n is
-accessible but sacrifices performance. Temporal is correct but complex.
-Inngest balances developer experience with reliability. There's no "best" -
-only "best for your situation."
+## When to Trigger
+- Multi-step automated processes
+- Reusable workflow creation
+- Complex task orchestration
+- CI/CD pipeline setup
 
-You push for durable execution 
+## Commands
 
-## Capabilities
+### Create Workflow
+```bash
+npx claude-flow workflow create --name "deploy-flow" --template ci
+```
 
-- workflow-automation
-- workflow-orchestration
-- durable-execution
-- event-driven-workflows
-- step-functions
-- job-queues
-- background-jobs
-- scheduled-tasks
+### Execute Workflow
+```bash
+npx claude-flow workflow execute --name "deploy-flow" --env production
+```
 
-## Patterns
+### List Workflows
+```bash
+npx claude-flow workflow list
+```
 
-### Sequential Workflow Pattern
+### Export Template
+```bash
+npx claude-flow workflow export --name "deploy-flow" --format yaml
+```
 
-Steps execute in order, each output becomes next input
+### View Status
+```bash
+npx claude-flow workflow status --name "deploy-flow"
+```
 
-### Parallel Workflow Pattern
+## Built-in Templates
 
-Independent steps run simultaneously, aggregate results
+| Template | Description |
+|----------|-------------|
+| `ci` | Continuous integration pipeline |
+| `deploy` | Deployment workflow |
+| `test` | Testing workflow |
+| `release` | Release automation |
+| `review` | Code review workflow |
 
-### Orchestrator-Worker Pattern
+## Workflow Structure
+```yaml
+name: example-workflow
+steps:
+  - name: analyze
+    agent: researcher
+    task: "Analyze requirements"
+  - name: implement
+    agent: coder
+    depends: [analyze]
+    task: "Implement solution"
+  - name: test
+    agent: tester
+    depends: [implement]
+    task: "Write and run tests"
+```
 
-Central coordinator dispatches work to specialized workers
-
-## Anti-Patterns
-
-### ❌ No Durable Execution for Payments
-
-### ❌ Monolithic Workflows
-
-### ❌ No Observability
-
-## ⚠️ Sharp Edges
-
-| Issue | Severity | Solution |
-|-------|----------|----------|
-| Issue | critical | # ALWAYS use idempotency keys for external calls: |
-| Issue | high | # Break long workflows into checkpointed steps: |
-| Issue | high | # ALWAYS set timeouts on activities: |
-| Issue | critical | # WRONG - side effects in workflow code: |
-| Issue | medium | # ALWAYS use exponential backoff: |
-| Issue | high | # WRONG - large data in workflow: |
-| Issue | high | # Inngest onFailure handler: |
-| Issue | medium | # Every production n8n workflow needs: |
-
-## Related Skills
-
-Works well with: `multi-agent-orchestration`, `agent-tool-builder`, `backend`, `devops`
+## Best Practices
+1. Define clear step dependencies
+2. Use appropriate agent types per step
+3. Include validation gates
+4. Export workflows for reuse
